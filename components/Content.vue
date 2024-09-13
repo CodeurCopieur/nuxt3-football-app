@@ -1,12 +1,16 @@
 <script lang="ts" setup>
+  interface State {
+    leagues: [];
+  }
 
   const { getLeagues } = useFootballApi();
   const filterType = ref<String>('All');
-  const filterCountry = ref('All');
-  const state = reactive({
+  const filterCountry = ref<String>('All');
+  const state = reactive<State>({
     leagues: []
   });
   const loading = ref<boolean>(true);
+  const { type } = defineProps(['type']);
 
 
   const filteredLeagues = computed(() => {
@@ -70,18 +74,25 @@
       </div>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <div v-for="league in filteredLeagues" :key="league.league.id" class="card bg-white border border-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center">
-        <div class="w-24 h-24 mb-4">
-          <picture>
-            <img 
-              v-lazy 
-              :data-src="league.league.logo"
-              :alt="league.league.name" 
-              class="w-full h-full object-contain">
-          </picture>
+      <div v-for="league in filteredLeagues" :key="league.league.id" >
+        <NuxtLink 
+        :to="{path:`/${type}/${league.league.id}`}" 
+        class="relative"
+        role="link">
+          <div class="card bg-white border border-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center">
+          <div class="w-24 h-24 mb-4">
+            <picture>
+              <img 
+                v-lazy 
+                :data-src="league.league.logo"
+                :alt="league.league.name" 
+                class="w-full h-full object-contain">
+            </picture>
+          </div>
+          <h2 class="text-xl font-semibold text-gray-900">{{ league.league.name }}</h2>
+          <span class="text-sm text-gray-500">{{ league.league.type }}</span>
         </div>
-        <h2 class="text-xl font-semibold text-gray-900">{{ league.league.name }}</h2>
-        <span class="text-sm text-gray-500">{{ league.league.type }}</span>
+        </NuxtLink>
       </div>
     </div>
     <div v-if="loading" class="loader-container fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-white bg-opacity-80 z-50">
