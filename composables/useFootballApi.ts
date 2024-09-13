@@ -13,6 +13,18 @@ export const useFootballApi = () => {
     }
   };
 
+  const getLeagueInfo = async (leagueId: string, season: string) => {
+    try {
+      const response = await $axios.get('/leagues', {
+        params: { id: leagueId, season }
+      });
+      return response.data.response[0];
+    } catch (error) {
+      console.error('Error fetching league info:', error);
+      throw error;
+    }
+  };
+
   const getTeams = async (leagueId: number) => {
     try {
       const response = await $axios.get(`/teams?league=${leagueId}`);
@@ -23,8 +35,48 @@ export const useFootballApi = () => {
     }
   };
 
+  const getTeamsByLeague = async (leagueId: number, season: number) => {
+    try {
+      const response = await $axios.get('/teams', {
+        params: { league: leagueId, season }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching teams by league:', error);
+      throw error;
+    }
+  };
+
+  const getTopScorers = async (leagueId: number, season: number) => {
+    try {
+      const response = await $axios.get('/players/topscorers', {
+        params: { league: leagueId, season }
+      });
+      return response.data.response[0];
+    } catch (error) {
+      console.error('Error fetching top scorers:', error);
+      throw error;
+    }
+  };
+
+  const getTopAssists = async (leagueId: number, season: number) => {
+    try {
+      const response = await $axios.get('/players/topassists', {
+        params: { league: leagueId, season }
+      });
+      return response.data.response[0];
+    } catch (error) {
+      console.error('Error fetching top assists:', error);
+      throw error;
+    }
+  };
+
   return {
     getLeagues,
-    getTeams
+    getLeagueInfo,
+    getTeams,
+    getTeamsByLeague,
+    getTopScorers,
+    getTopAssists
   };
 };
